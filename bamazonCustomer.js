@@ -120,24 +120,30 @@ var Customer = function() {
 			.then(function(answer) {
 
 				// initialise variables
-				var itemIdMatch = false;
-				var sufficientStock = true;
-				var orderItem = null;
-				var newStockQuantity = 0;
-				var inventoryLength = inventory.length;
+				var itemIdMatch = false;				// check if user item matches inventory
+				var sufficientStock = true;				// check if sufficient stock
+				var orderItem = null;					// object containing an order for an item
+				var newStockQuantity = 0;				// stock quantity after order is placed
+				var inventoryLength = inventory.length;	// number of products in the inventory
 
 				// loop through inventory
 				for (var i = 0; i < inventoryLength; i++) {
+
+					// check if user item matches inventory item
 					if (answer.itemID === inventory[i].item_id) {
 
 						itemIdMatch = true;
 
+						// check if sufficient stock available
 						if (answer.quantity > inventory[i].stock_quantity) {
 					
 							sufficientStock = false;
 						}
+
+						// if all OK, order item
 						else {
 
+							// an object representing an order for an item	
 							orderItem = {
 								item_id : inventory[i].item_id,
 								product_name : inventory[i].product_name,
@@ -146,15 +152,17 @@ var Customer = function() {
 								orderQuantity : answer.quantity
 							};
 
+							// calculate subtotal for the order item
 							var subTotal = orderItem.price * orderItem.orderQuantity;
 							orderItem.subTotal = subTotal;
 							
+							// calculate stock quantity after order is placed
 							newStockQuantity = inventory[i].stock_quantity - answer.quantity;
 						};
 					};
 				};
 
-				// message to user if required
+				// display message to user if required
 				if (!itemIdMatch) {
 					console.log("Sorry, that product ID doesn't exist");
 				}
@@ -164,7 +172,8 @@ var Customer = function() {
 					}
 				};
 
-				// update inventory and current order status
+				// if there is a new order item,
+				// update inventory and add order item to current order
 				if(orderItem) {
 					var queryString =	"UPDATE products " +
 										"SET stock_quantity = " + newStockQuantity +

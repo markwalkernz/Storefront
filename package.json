@@ -1,0 +1,24 @@
+{
+  "name": "storefront",
+  "version": "1.0.0",
+  "description": "Coding Boot Camp Week 12 homework. MySQL database with a Node user interface.",
+  "main": "storefront.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markwalkernz/Storefront.git"
+  },
+  "author": "Mark Walker",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/markwalkernz/Storefront/issues"
+  },
+  "homepage": "https://github.com/markwalkernz/Storefront#readme",
+  "dependencies": {
+    "easy-table": "^1.1.0",
+    "inquirer": "^4.0.0",
+    "mysql": "^2.15.0"
+  }
+}

@@ -42,6 +42,27 @@ var Customer = function() {
 
 	}; // end of displayProductTable function
 
+	// display the current order as a table using the easy-table package
+	var displayCurrentOrder = function(customerOrder) {
+	
+		console.log("\nYour current order is:\r\n")
+
+		var t = new Table;
+		 
+		customerOrder.forEach(function(product) {
+		  t.cell('ID', product.item_id)
+		  t.cell('Description', product.product_name)
+		  t.cell('Department', product.department_name)
+		  t.cell('Price', product.price, Table.number(2))
+		  t.cell('Quantity', product.orderQuantity, Table.number(0))
+		  t.cell('SubTotal', product.subTotal, Table.number(2))
+		  t.total('SubTotal')
+		  t.newRow()
+		});
+		 
+		console.log(t.toString());
+	}; // end of displayCurrentOrder function
+
 	// query the products table using a provided query string
 	this.productQuery = function(queryString) {
 
@@ -60,8 +81,6 @@ var Customer = function() {
 			if (error) throw error;
 
 			displayProductTable(result);
-
-			connection.end();
 		});
 
 	}; // end of productQuery method
@@ -100,8 +119,11 @@ var Customer = function() {
 				)
 			.then(function(answer) {
 
+				// initialise variables
 				var itemIdMatch = false;
 				var sufficientStock = true;
+				var orderItem = null;
+				var newStockQuantity = 0;
 				var inventoryLength = inventory.length;
 
 				// loop through inventory
@@ -115,6 +137,7 @@ var Customer = function() {
 							sufficientStock = false;
 						}
 						else {
+
 							orderItem = {
 								item_id : inventory[i].item_id,
 								product_name : inventory[i].product_name,
@@ -122,14 +145,16 @@ var Customer = function() {
 								price : inventory[i].price,
 								orderQuantity : answer.quantity
 							};
+
+							var subTotal = orderItem.price * orderItem.orderQuantity;
+							orderItem.subTotal = subTotal;
 							
-							currentOrder.push(orderItem);
-							console.log(currentOrder);
+							newStockQuantity = inventory[i].stock_quantity - answer.quantity;
 						};
 					};
 				};
 
-				// message to user
+				// message to user if required
 				if (!itemIdMatch) {
 					console.log("Sorry, that product ID doesn't exist");
 				}
@@ -137,19 +162,31 @@ var Customer = function() {
 					if (!sufficientStock) {
 						console.log("Sorry, there is not enough stock to complete your order");
 					}
-					else {
-						console.log("item has been added to order");
-					};
 				};
-			});
 
-			connection.end();
-		});
+				// update inventory and current order status
+				if(orderItem) {
+					var queryString =	"UPDATE products " +
+										"SET stock_quantity = " + newStockQuantity +
+										" WHERE item_id = " + orderItem.item_id;
+
+					// SQL query to update inventory
+					connection.query(queryString, function (error, inventory) {
+
+						if (error) throw error;
+
+						// add order item to current order
+						currentOrder.push(orderItem);
+						displayCurrentOrder(currentOrder);
+
+					});
+				};
+
+			}); // end of then function
+
+		}); // end of connection.query
 
 	}; // end of placeOrder method
-
-
-			// else update database and provide customer total cost
 };
 // end of Customer constructor
 

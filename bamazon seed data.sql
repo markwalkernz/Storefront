@@ -11,7 +11,7 @@ VALUES
     ("Diamond Ring","Jewellery",5999.99,2),
     ("George Foreman Grill","Appliances",59.99,200),
     ("Waffle Maker","Appliances",29.99,150),
-    ("Rubiks Cube","Toys",19.99,2000)
+    ("Rubiks Cube","Toys",9.99,2000)
     ;
 
 SELECT * FROM products;

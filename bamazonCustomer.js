@@ -2,25 +2,25 @@ var mysql = require("mysql");			// MySQL node package for database interaction
 var inquirer = require("inquirer");		// Inquirer node package for user prompts
 var Table = require("easy-table")		// Easy Table node package for table formatting
 
-
-// database connection
-var connection = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-
-  // Your username
-  user: "root",
-
-  // Your password
-  password: "",
-  database: "bamazon"
-});
-
-// end of database connection
-
-
 //Customer
 var Customer = function() {
+	// database connection
+	var connection = mysql.createConnection({
+	  host: "localhost",
+	  port: 3306,
+
+	  user: "root",
+
+	  password: "",
+	  database: "bamazon"
+	});
+	// end of database connection
+
+	// connect to the database
+	connection.connect(function(err) {
+	if (err) throw err;
+	console.log("connected as id " + connection.threadId + "\n");
+	});
 
 	// currentOrder is an array of the orders the customer places using the placeOrder method
 	this.currentOrder = [];
@@ -193,30 +193,4 @@ var Customer = function() {
 };
 // end of Customer constructor
 
-function start() {
-  inquirer
-    .prompt({
-      name: "startOrder",
-      type: "list",
-      message: "Welcome to Bamazon, would you like to place an order?",
-      choices: ["Yes", "No"]
-    })
-    .then(function(answer) {
-    	if (answer.startOrder == "No") {
-    		console.log("Thanks for visiting Bamazon!");
-    	}
-    	else {
-
-    		// connect to the database
-			connection.connect(function(err) {
-			if (err) throw err;
-			console.log("connected as id " + connection.threadId + "\n");
-			});
-
-    		var customer = new Customer();
-			customer.placeOrder(customer.currentOrder);    		
-    	};
-    });
-};
-
-start();
+module.exports = Customer;

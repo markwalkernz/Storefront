@@ -2,7 +2,7 @@
   "name": "storefront",
   "version": "1.0.0",
   "description": "Coding Boot Camp Week 12 homework. MySQL database with a Node user interface.",
-  "main": "storefront.js",
+  "main": "bamazon.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

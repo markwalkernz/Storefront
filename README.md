@@ -3,12 +3,12 @@ Coding Boot Camp Week 12 homework. MySQL database with a Node.js user interface.
 
 The application requires the following node packages:
 
-- mysql				connection to My SQL database
-- inquirer			user prompts
-- easy-table		table formatting in the command line interface 
+- 'mysql' for connection to My SQL database
+- 'inquirer' for user prompts
+- 'easy-table' for table formatting in the command line interface 
 
 
-Run bamazon.js to use the app.
+Run 'node bamazon.js' to use the app.
 
 
 The database is in MySQL and is created using bamazonSchema.sql. There is seed data stored in bamazonSeedData.sql.

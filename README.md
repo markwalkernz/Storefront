@@ -1,6 +1,8 @@
 # Storefront
 Coding Boot Camp Week 12 homework. MySQL database with a Node.js user interface.
 
+The application uses a MySQL database to hold an inventory of stock. A customer can query the inventory, then place an order. The inventory is reduced by the number of items that the customer orders.
+
 The application requires the following node packages:
 
 - 'mysql' for connection to My SQL database
@@ -13,7 +15,7 @@ Run 'node bamazon.js' to use the app.
 
 The database is in MySQL and is created using bamazonSchema.sql. There is seed data stored in bamazonSeedData.sql.
 
-bamazon.js provides the entry point to the application via inquirer prompts. If the user wants to place an order, a  new customer object is created based on the constructor script in bamazonCustomer.js.
+bamazon.js provides the entry point to the application via inquirer prompts. If the user wants to place an order, a new customer object is created based on the constructor script in bamazonCustomer.js.
 
 bamazonCustomer.js provides a Customer construct with the following features;
 

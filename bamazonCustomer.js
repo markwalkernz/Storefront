@@ -44,7 +44,7 @@ var Customer = function() {
 
 	// display the current order as a table using the easy-table package
 	var displayCurrentOrder = function(customerOrder) {
-	
+
 		console.log("\nYour current order is:\r\n")
 
 		var t = new Table;
@@ -56,44 +56,16 @@ var Customer = function() {
 		  t.cell('Price', product.price, Table.number(2))
 		  t.cell('Quantity', product.orderQuantity, Table.number(0))
 		  t.cell('SubTotal', product.subTotal, Table.number(2))
-		  t.total('SubTotal')
+		  t.total('SubTotal', {printer: Table.number(2)})
 		  t.newRow()
 		});
 		 
 		console.log(t.toString());
 	}; // end of displayCurrentOrder function
 
-	// query the products table using a provided query string
-	this.productQuery = function(queryString) {
-
-		// pass the displayProductTable method to this method
-		//var displayProductTable = this.displayProductTable;
-
-		// connect to the database
-		connection.connect(function(err) {
-		if (err) throw err;
-		console.log("connected as id " + connection.threadId + "\n");
-		});
-		
-		// SQL query
-		connection.query(queryString, function (error, result) {
-	
-			if (error) throw error;
-
-			displayProductTable(result);
-		});
-
-	}; // end of productQuery method
-
 	// place an order
-	this.placeOrder = function(currentOrder) {
+	var placeOrder = function(currentOrder) {
 
-		// connect to the database
-		connection.connect(function(err) {
-		if (err) throw err;
-		console.log("connected as id " + connection.threadId + "\n");
-		});
-		
 		// SQL query to get current inventory
 		connection.query("SELECT * FROM products", function (error, inventory) {
 	
@@ -183,22 +155,68 @@ var Customer = function() {
 					connection.query(queryString, function (error, inventory) {
 
 						if (error) throw error;
-
-						// add order item to current order
-						currentOrder.push(orderItem);
-						displayCurrentOrder(currentOrder);
-
 					});
+
+					// add order item to current order
+					currentOrder.push(orderItem);
 				};
+
+				// display the current order
+				displayCurrentOrder(currentOrder);
+
+				// see if user would like to add an item
+				inquirer
+				    .prompt({
+				      name: "addItem",
+				      type: "list",
+				      message: "Would you like to add to your order?",
+				      choices: ["Yes", "No"]
+				    })
+				    .then(function(answer) {
+
+				    	if (answer.addItem == "No") {
+				    		console.log("Thanks for visiting Bamazon!");
+				    		connection.end();
+				    	}
+				    	else {
+							placeOrder(currentOrder);    		
+				    	};
+				    });
 
 			}); // end of then function
 
 		}); // end of connection.query
 
 	}; // end of placeOrder method
+
+	this.placeOrder = placeOrder;
 };
 // end of Customer constructor
 
-var customer = new Customer();
+function start() {
+  inquirer
+    .prompt({
+      name: "startOrder",
+      type: "list",
+      message: "Welcome to Bamazon, would you like to place an order?",
+      choices: ["Yes", "No"]
+    })
+    .then(function(answer) {
+    	if (answer.startOrder == "No") {
+    		console.log("Thanks for visiting Bamazon!");
+    	}
+    	else {
 
-customer.placeOrder(customer.currentOrder);
+    		// connect to the database
+			connection.connect(function(err) {
+			if (err) throw err;
+			console.log("connected as id " + connection.threadId + "\n");
+			});
+
+    		var customer = new Customer();
+			customer.placeOrder(customer.currentOrder);    		
+    	};
+    });
+};
+
+start();

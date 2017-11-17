@@ -128,19 +128,40 @@ var addInventory = function () {
 		)
 	    .then(function(answer) {
 
-			var queryString =	"UPDATE products " +
-								"SET stock_quantity = stock_quantity + " + answer.quantity +
-								" WHERE item_id = " + answer.itemID;
+			// initialise variables
+			var itemIdMatch = false;				// check if user item matches inventory
+			var inventoryLength = inventory.length;	// number of products in the inventory
 
-			// SQL query to update inventory and display  message to user
-			connection.query(queryString, function (error, inventory) {
+			// loop through inventory
+			for (var i = 0; i < inventoryLength; i++) {
 
-				if (error) throw error;
+				// check if user item matches inventory item
+				if (answer.itemID === inventory[i].item_id) {
 
-		    	console.log("\nStock for item ID " + answer.itemID + " has been increased by " + answer.quantity +"\r\n");
+					itemIdMatch = true;
+				};
+			};
 
-		    	start();
-			});
+			if (itemIdMatch) {
+				var queryString =	"UPDATE products " +
+									"SET stock_quantity = stock_quantity + " + answer.quantity +
+									" WHERE item_id = " + answer.itemID;
+
+				// SQL query to update inventory and display  message to user
+				connection.query(queryString, function (error, inventory) {
+
+					if (error) throw error;
+
+			    	console.log("\nStock for item ID " + answer.itemID + " has been increased by " + answer.quantity +"\r\n");
+
+			    	start();
+				});
+			}
+			else {
+				console.log("Sorry, that item ID was not found.")
+
+				start();
+			};
 		});
 	});
 }; // end of addInventory function

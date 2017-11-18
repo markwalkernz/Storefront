@@ -111,6 +111,7 @@ var addInventory = function () {
 		console.log("\nProducts for Sale\r\n");
 		displayProductTable(inventory);
 
+		// user input
 		inquirer
 	    .prompt(				
 	    [{
@@ -142,6 +143,7 @@ var addInventory = function () {
 				};
 			};
 
+			// if user item matches inventory item then update inventory else display message
 			if (itemIdMatch) {
 				var queryString =	"UPDATE products " +
 									"SET stock_quantity = stock_quantity + " + answer.quantity +
@@ -168,10 +170,65 @@ var addInventory = function () {
 
 // Add New Product
 var addNewProduct = function () {
-	console.log("Add New Product");
+	console.log("\nAdd New Product\r\n");
 
-	start();
-}; // end of newProduct function
+	// SQL query to get current inventory
+	connection.query("SELECT * FROM products", function (error, inventory) {
+	
+		if (error) throw error;
+
+		console.log("\nCurrent Products\r\n");
+		displayProductTable(inventory);
+
+		// user input
+		inquirer
+	    .prompt(				
+	    [{
+		type: 'input',
+		name: 'productName',
+		message: 'Enter the name of the product you would like to add: '
+		},
+		{
+		type: 'input',
+		name: 'departmentName',
+		message: 'Enter the department of the product you would like to add: '
+		},
+		{
+		type: 'input',
+		name: 'price',
+		message: 'Enter the price of the product you would like to add : $',
+		filter: function(val) {return parseFloat(val);}
+		},
+		{
+		type: 'input',
+		name: 'stockQuantity',
+		message: 'How many items would you like to add to the inventory? ',
+		filter: function(val) {return parseInt(val);}
+		}]
+		)
+	    .then(function(answer) {
+
+			var queryString =	"INSERT INTO products " +
+								"(product_name, department_name,price,stock_quantity) " +
+								"VALUES ( '" +
+								answer.productName + "','" +
+								answer.departmentName + "'," +
+								answer.price + "," +
+								answer.stockQuantity + ")";
+
+
+			// SQL query to update inventory and display  message to user
+			connection.query(queryString, function (error, inventory) {
+
+				if (error) throw error;
+
+		    	console.log("\n" + answer.productName + " has been added.\r\n");
+
+		    	start();
+			});
+		});
+	});
+}; // end of addNewProduct function
 
 
 

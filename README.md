@@ -17,6 +17,9 @@ The database is in MySQL and is created using bamazonSchema.sql. There is seed d
 
 bamazon.js provides the entry point to the application via inquirer prompts. If the user wants to place an order, a new customer object is created based on the constructor script in bamazonCustomer.js.
 
+
+Customer Functions
+
 bamazonCustomer.js provides a Customer construct with the following features;
 
 - connection to the MySQL database
@@ -30,3 +33,15 @@ bamazonCustomer.js provides a Customer construct with the following features;
 	- adds the ordered items to the customer.currentOrder object
 	- if the user would like to place another order, uses recursion to call the placeOrder function again 
 
+Manager Functions
+
+bamazonManager.js provides the following features;
+
+- connection to the MySQL database
+- a start menu using inquirer
+- displayProductTable function which uses easy table to display the inventory and the current order in table format
+- functions which allow the manager to
+	- view all products in inventory
+	- view products that are low in stock
+	- add stock to exisitng products
+	- add a new product

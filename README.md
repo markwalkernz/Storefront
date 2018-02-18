@@ -1,5 +1,5 @@
 # Storefront
-Coding Boot Camp Week 12 homework. MySQL database with a Node.js user interface.
+MySQL database with a Node.js command line interface.
 
 The application uses a MySQL database to hold an inventory of stock. A customer can query the inventory, then place an order. The inventory is reduced by the number of items that the customer orders.
 
